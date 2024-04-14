@@ -1,2 +1,0 @@
-# livox_camera_calibration
-用来一键完成激光雷达和相机的融合标定
