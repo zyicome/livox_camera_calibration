@@ -30,7 +30,7 @@ public:
     void pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input);
 
     // publisher
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_pub;;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_pub;
     // subscriber
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_sub;
 };
