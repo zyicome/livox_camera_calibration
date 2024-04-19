@@ -51,6 +51,7 @@ target_link_libraries(${PROJECT_NAME}_node
         ${PCL_LIBRARIES}
         ${Boost_LIBRARIES}
         ${LIBUSB1_LIBRARIES}
+        ${PCL_IO_LIBRARY}
         )
 
 if(BUILD_TESTING)
