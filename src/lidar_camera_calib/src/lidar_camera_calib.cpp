@@ -173,6 +173,7 @@ void roughCalib(Calibration &calibra, Vector6d &calib_params,
                           pnp_list);
         float cost = (calibra.plane_line_cloud_->size() - pnp_list.size()) *
                      1.0 / calibra.plane_line_cloud_->size();
+
         if (cost < min_cost) {
           std::cout << "Rough calibration min cost:" << cost << std::endl;
           min_cost = cost;
@@ -224,20 +225,24 @@ int main(int argc, char **argv) {
   image_file = "/home/mechax/zyb/lidar_camera_calibration_data/calibration_img.jpg";
   pcd_file = "/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd";
   result_file = "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/result/extrinsic.txt";
-  camera_matrix.push_back(1474.62545);
+  camera_matrix.push_back(1563.52174);
   camera_matrix.push_back(0.0);
-  camera_matrix.push_back(367.67245);
+  camera_matrix.push_back(626.90356);
   camera_matrix.push_back(0.0);
-  camera_matrix.push_back(1463.59535);
-  camera_matrix.push_back(274.85727);
+  camera_matrix.push_back(1568.90028);
+  camera_matrix.push_back(488.93524);
   camera_matrix.push_back(0.0);
   camera_matrix.push_back(0.0);
   camera_matrix.push_back(1.0);
-  dist_coeffs.push_back(-0.025299);
-  dist_coeffs.push_back(-0.874546);
-  dist_coeffs.push_back(-0.000261);
-  dist_coeffs.push_back(0.018625);
+  dist_coeffs.push_back(-0.063200);
+  dist_coeffs.push_back(-0.005061);
+  dist_coeffs.push_back(-0.001755);
+  dist_coeffs.push_back(0.0034720);
   dist_coeffs.push_back(0.0);
+
+  std::cout << "camera_matrix: " << camera_matrix.size() << std::endl;
+  std::cout << "dist_coeffs: " << dist_coeffs.size() << std::endl;
+  std::cout << "use_rough_calib: " << use_rough_calib << std::endl;
 
   calib_config_file = "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/config/config_indoor.yaml";
   use_rough_calib = true;
@@ -310,6 +315,7 @@ int main(int argc, char **argv) {
   if (use_rough_calib) {
     roughCalib(calibra, calib_params, DEG2RAD(0.1), 50);
   }
+
   cv::Mat test_img = calibra.getProjectionImg(calib_params);
   cv::namedWindow("After rough extrinsic", cv::WINDOW_NORMAL);
   cv::imshow("After rough extrinsic", test_img);

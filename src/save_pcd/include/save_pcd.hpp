@@ -29,6 +29,10 @@ public:
 
     void pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input);
 
+    int i;
+
+    pcl::PointCloud<pcl::PointXYZI>::Ptr all_cloud;
+
     // publisher
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_pub;
     // subscriber

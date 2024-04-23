@@ -7,11 +7,15 @@ RadarDeal::RadarDeal() : Node("radar_deal")
     cloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("/livox/deal", 10);
 
     cloud_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>("/livox/lidar", 10, std::bind(&RadarDeal::pointCloudCallback, this, std::placeholders::_1));
+
+    i = 0;
+
+    all_cloud.reset(new pcl::PointCloud<pcl::PointXYZI>);
 }
 
 void RadarDeal::pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input)
 {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::PCLPointCloud2 pcl_pc2;
     pcl_conversions::toPCL(input, pcl_pc2);
     pcl::fromPCLPointCloud2(pcl_pc2, *cloud);   
@@ -48,13 +52,20 @@ void RadarDeal::pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input)
 
         *cloud_cluster_all += *cloud_cluster;
     }*/
-    int i = 0;
 
-    for(i= 0;i<200;i++)
+    if(i % 50 == 0)
     {
-        pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd", *cloud);
-        std::cout << "success to save pcd!" << std::endl;
+        std::cout << "save" << std::endl;
+        *all_cloud += *cloud;
     }
+    if(i == 500)
+    {
+        pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd", *all_cloud);
+        std::cout << "success to save pcd!" << std::endl;
+        exit(0);
+    }
+
+    i++;
 
     /*sensor_msgs::msg::PointCloud2 output;
     pcl::toROSMsg(*cloud_cluster_all, output);

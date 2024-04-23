@@ -1,4 +1,4 @@
-lidar_camera_calib:
+/lidar_camera_calib:
     ros__parameters:
         # Data path. adjust them!
         image_file: "/home/mechax/zyb/lidar_camera_calibration_data/calibration_img.jpg"
@@ -6,10 +6,10 @@ lidar_camera_calib:
         result_file: "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/result/extrinsic.txt"
 
         # Camera Parameters. Adjust them!
-        camera_matrix: [1474.62545, 0.0, 367.67245, 
-                        0.0, 1463.59535, 274.85727,
-                        0.0, 0.0, 1.0]
-        dist_coeffs: [-0.025299, -0.874546, -0.000261, 0.018625, 0.0]
+        camera_matrix: [3135.31292,    0.     ,  526.87116,
+            0.     , 3151.06425,  695.83061,
+            0.     ,    0.     ,    1.     ]
+        dist_coeffs: [-0.019203, 0.252109, 0.016576, -0.012270, 0.000000]
 
         # Calibration Parameters.!
         calib_config_file: "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/config/config_indoor.yaml"
