@@ -39,7 +39,7 @@
 #define calib
 #define online
 
-int if_begin = 0;
+extern int if_begin;
 
 class Calibration : public rclcpp::Node {
 public:

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-extern int if_begin;
+int if_begin = 0;
 
 // Data path
 string image_file;
@@ -247,7 +247,7 @@ int main(int argc, char **argv) {
   Calibration calibra(options);
   calibra.initializeCalib(image_file, pcd_file, calib_config_file);
 
-  if(if_begin == 0 && if_begin == 1)
+  if(if_begin == 0 || if_begin == 1)
   {
     std::cout << "close camera calibration" << std::endl;
    camera_matrix.push_back(1563.52174);
@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
   dist_coeffs.push_back(0.003472);
   dist_coeffs.push_back(0.0);
   }
-  else
+  else if(if_begin == 2)
   {
     std::cout << "far camera calibration" << std::endl;
     camera_matrix.push_back(3135.31292);
@@ -514,7 +514,7 @@ int main(int argc, char **argv) {
   // TODO: Make this a viz function
   // TODO: Change new to make_shared
   // TODO: Add debug flag to turn on/off debug prints
-  while (rclcpp::ok()) {
+  /*while (rclcpp::ok()) {
     sensor_msgs::msg::PointCloud2 pub_cloud;
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr rgb_cloud(
         new pcl::PointCloud<pcl::PointXYZRGB>);
@@ -531,8 +531,8 @@ int main(int argc, char **argv) {
     calibra.image_pub_->publish(img_msg);
     std::cout << "push enter to publish again" << std::endl;
     getchar();
-    /* code */
-  }
-  rclcpp::shutdown();
+    code 
+  }*/
+  node.reset();
   return 0;
 }
