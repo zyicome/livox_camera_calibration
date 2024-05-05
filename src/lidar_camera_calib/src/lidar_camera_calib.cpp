@@ -8,6 +8,8 @@
 
 using namespace std;
 
+extern int if_begin;
+
 // Data path
 string image_file;
 string pcd_file;
@@ -224,8 +226,31 @@ int main(int argc, char **argv) {
 
   image_file = "/home/mechax/zyb/lidar_camera_calibration_data/calibration_img.jpg";
   pcd_file = "/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd";
-  result_file = "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/result/extrinsic.txt";
-  camera_matrix.push_back(1563.52174);
+  result_file = "/home/mechax/zyb/livox_camera_calibration/src/lidar_camera_calib/result/extrinsic.txt";
+
+  calib_config_file = "/home/mechax/zyb/livox_camera_calibration/src/lidar_camera_calib/config/config_indoor.yaml";
+  use_rough_calib = true;
+  save_img = true;
+  folder = "/home/mechax/zyb/livox_camera_calibration/src/lidar_camera_calib/result";
+
+  auto node_calib = std::make_shared<Calibration>(options);
+  try
+  {
+    rclcpp::spin(node_calib);
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+    node_calib.reset();
+  }
+
+  Calibration calibra(options);
+  calibra.initializeCalib(image_file, pcd_file, calib_config_file);
+
+  if(if_begin == 0 && if_begin == 1)
+  {
+    std::cout << "close camera calibration" << std::endl;
+   camera_matrix.push_back(1563.52174);
   camera_matrix.push_back(0.0);
   camera_matrix.push_back(626.90356);
   camera_matrix.push_back(0.0);
@@ -237,20 +262,32 @@ int main(int argc, char **argv) {
   dist_coeffs.push_back(-0.063200);
   dist_coeffs.push_back(-0.005061);
   dist_coeffs.push_back(-0.001755);
-  dist_coeffs.push_back(0.0034720);
+  dist_coeffs.push_back(0.003472);
   dist_coeffs.push_back(0.0);
+  }
+  else
+  {
+    std::cout << "far camera calibration" << std::endl;
+    camera_matrix.push_back(3135.31292);
+  camera_matrix.push_back(0.0);
+  camera_matrix.push_back(526.87116);
+  camera_matrix.push_back(0.0);
+  camera_matrix.push_back(3151.06425);
+  camera_matrix.push_back(695.83061);
+  camera_matrix.push_back(0.0);
+  camera_matrix.push_back(0.0);
+  camera_matrix.push_back(1.0);
+  dist_coeffs.push_back(-0.019203);
+  dist_coeffs.push_back(0.252109);
+  dist_coeffs.push_back(0.016576);
+  dist_coeffs.push_back(-0.012270);
+  dist_coeffs.push_back(0.0);
+  }
 
   std::cout << "camera_matrix: " << camera_matrix.size() << std::endl;
   std::cout << "dist_coeffs: " << dist_coeffs.size() << std::endl;
   std::cout << "use_rough_calib: " << use_rough_calib << std::endl;
 
-  calib_config_file = "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/config/config_indoor.yaml";
-  use_rough_calib = true;
-  save_img = true;
-  folder = "/home/mechax/zyb/ros2_livox_camera_calibration/src/lidar_camera_calib/result";
-
-  Calibration calibra(options);
-  calibra.initializeCalib(image_file, pcd_file, calib_config_file);
   // Load this in a function?
   calibra.fx_ = camera_matrix[0];
   calibra.cx_ = camera_matrix[2];
@@ -438,6 +475,25 @@ int main(int argc, char **argv) {
     outfile << R(i, 0) << "," << R(i, 1) << "," << R(i, 2) << "," << T[i]
             << std::endl;
   }
+
+  //发布结果
+  std_msgs::msg::Float64MultiArray result;
+  result.data.push_back(R(0, 0));
+  result.data.push_back(R(0, 1));
+  result.data.push_back(R(0, 2));
+  result.data.push_back(T[0]);
+  result.data.push_back(R(1, 0));
+  result.data.push_back(R(1, 1));
+  result.data.push_back(R(1, 2));
+  result.data.push_back(T[1]);
+  result.data.push_back(R(2, 0));
+  result.data.push_back(R(2, 1));
+  result.data.push_back(R(2, 2));
+  result.data.push_back(T[2]);
+  result.data.push_back(0.0); // 0表示近距离，1表示远距离
+  calibra.calibration_result_pub_->publish(result);
+  std::cout << "publish result" << std::endl;
+
   outfile << 0 << "," << 0 << "," << 0 << "," << 1 << std::endl;
   cv::Mat opt_img = calibra.getProjectionImg(calib_params);
   cv::namedWindow("Optimization result", cv::WINDOW_NORMAL);

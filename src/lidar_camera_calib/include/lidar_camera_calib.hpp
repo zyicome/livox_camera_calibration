@@ -31,8 +31,16 @@
 #include <time.h>
 #include <unordered_map>
 
+#include "std_msgs/msg/int8.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
+
+#include <exception>
+
 #define calib
 #define online
+
+int if_begin = 0;
+
 class Calibration : public rclcpp::Node {
 public:
   rclcpp::Node::SharedPtr node = rclcpp::Node::make_shared("my_node");
@@ -41,6 +49,12 @@ public:
   rclcpp::Publisher < sensor_msgs::msg::PointCloud2 > ::SharedPtr planner_cloud_pub_;
   rclcpp::Publisher < sensor_msgs::msg::PointCloud2 > ::SharedPtr line_cloud_pub_;
   rclcpp::Publisher < sensor_msgs::msg::Image > ::SharedPtr image_pub_;
+
+  rclcpp::Publisher <std_msgs::msg::Float64MultiArray>::SharedPtr calibration_result_pub_;
+
+  rclcpp::Subscription <std_msgs::msg::Int8> ::SharedPtr begin_calibration_sub_;
+
+  rclcpp::Subscription <std_msgs::msg::Int8> ::SharedPtr label_sub;
 
   enum ProjectionType { DEPTH, INTENSITY, BOTH };
   enum Direction { UP, DOWN, LEFT, RIGHT };
@@ -112,6 +126,9 @@ public:
                      const VPnPData &vpnp_point, const float pixel_inc,
                      const float range_inc, const float degree_inc,
                      Eigen::Matrix2f &covarance);
+
+  void beginCalibrationCallback(const std_msgs::msg::Int8::SharedPtr msg) ;
+  void labelCallBack(const std_msgs::msg::Int8::SharedPtr msg) ;
   // 相机内参
   float fx_, fy_, cx_, cy_, k1_, k2_, p1_, p2_, k3_, s_;
   int width_, height_;
@@ -157,7 +174,26 @@ public:
 Calibration::Calibration(const rclcpp::NodeOptions & options)
 : Node("lidarCamCalib", options) {
   RCLCPP_INFO(get_logger(), "lidarCamCalib node is starting");
+
+  calibration_result_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/calibration_result",10);
+
+  begin_calibration_sub_ = this->create_subscription<std_msgs::msg::Int8>("/begin_calibration",10,std::bind(&Calibration::beginCalibrationCallback, this, std::placeholders::_1));
+
+  label_sub = this->create_subscription<std_msgs::msg::Int8>("/camera_label", 10, std::bind(&Calibration::labelCallBack, this, std::placeholders::_1));
   // TODO: Load params here from yaml file instead of current method
+}
+
+void Calibration::beginCalibrationCallback(const std_msgs::msg::Int8::SharedPtr msg) 
+{
+  std::cout << "success to begin!" << std::endl;
+  throw std::runtime_error("Terminating begin_calibration");
+}
+
+void Calibration::labelCallBack(const std_msgs::msg::Int8::SharedPtr msg) 
+{
+  std::cout << "success to receive label!" << std::endl;
+  if_begin = msg->data;
+  std::cout << "if_begin: " << if_begin << std::endl;
 }
 
 void Calibration::initializeCalib(const std::string &image_file,

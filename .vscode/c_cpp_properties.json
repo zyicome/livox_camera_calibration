@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/mechax/zyb/livox_camera_calibration/install/livox_interfaces/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/mechax/zyb/livox_camera_calibration/src/lidar_camera_calib/include/**",
+        "/home/mechax/zyb/livox_camera_calibration/src/save_img/include/**",
+        "/home/mechax/zyb/livox_camera_calibration/src/save_pcd/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

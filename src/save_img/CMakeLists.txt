@@ -31,8 +31,25 @@ target_link_directories(save_img PUBLIC
       $<INSTALL_INTERFACE:include>)
 target_link_libraries(save_img ${OpenCV_LIBS} ${orocos_kdl_LIBRARIES})
 
+add_executable(save_close_img src/save_close_img.cpp)
+ament_target_dependencies(save_close_img rclcpp tf2 tf2_ros geometry_msgs sensor_msgs cv_bridge)
+target_link_directories(save_close_img PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>)
+target_link_libraries(save_close_img ${OpenCV_LIBS} ${orocos_kdl_LIBRARIES})
+
+add_executable(save_far_img src/save_far_img.cpp)
+ament_target_dependencies(save_far_img rclcpp tf2 tf2_ros geometry_msgs sensor_msgs cv_bridge)
+target_link_directories(save_far_img PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include>)
+target_link_libraries(save_far_img ${OpenCV_LIBS} ${orocos_kdl_LIBRARIES})
+
+
 install(TARGETS
   save_img
+  save_close_img
+  save_far_img
   DESTINATION lib/${PROJECT_NAME}
 )
 

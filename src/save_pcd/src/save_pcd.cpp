@@ -1,10 +1,13 @@
 #include "save_pcd.hpp"
+#include <exception>
 
 #include "pcl/filters/passthrough.h"
 
 RadarDeal::RadarDeal() : Node("radar_deal")
 {
     cloud_pub = this->create_publisher<sensor_msgs::msg::PointCloud2>("/livox/deal", 10);
+
+    begin_calibration_pub = this->create_publisher<std_msgs::msg::Int8>("/begin_calibration", 10);
 
     cloud_sub = this->create_subscription<sensor_msgs::msg::PointCloud2>("/livox/lidar", 10, std::bind(&RadarDeal::pointCloudCallback, this, std::placeholders::_1));
 
@@ -53,16 +56,23 @@ void RadarDeal::pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input)
         *cloud_cluster_all += *cloud_cluster;
     }*/
 
-    if(i % 50 == 0)
+    if(i % 10 == 0)
     {
         std::cout << "save" << std::endl;
         *all_cloud += *cloud;
     }
-    if(i == 1000)
+    if(i == 150)
     {
         pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd", *all_cloud);
         std::cout << "success to save pcd!" << std::endl;
-        exit(0);
+        for(int j = 0;j<20;j++)
+        {
+            std_msgs::msg::Int8 msg;
+            msg.data = 1;
+            begin_calibration_pub->publish(msg);
+            std::cout << "success to pub!" << std::endl;
+        }
+        throw std::runtime_error("Terminating at i == 150");
     }
 
     i++;
@@ -76,7 +86,15 @@ void RadarDeal::pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input)
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<RadarDeal>());
-    rclcpp::shutdown();
+    auto node = std::make_shared<RadarDeal>();
+    try
+    {
+        rclcpp::spin(node);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+        node.reset();
+    }
     return 0;
 }

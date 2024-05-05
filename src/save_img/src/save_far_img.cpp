@@ -2,11 +2,11 @@
 #include <exception>
 
 SaveImg::SaveImg()
-: Node("save_img")
+: Node("save_rightimg")
 {
     i =0;
 
-      img_sub = this->create_subscription<sensor_msgs::msg::Image>("/image_raw", rclcpp::SensorDataQoS(), std::bind(&SaveImg::imgCallBack, this, std::placeholders::_1));
+      img_sub = this->create_subscription<sensor_msgs::msg::Image>("/image_far", rclcpp::SensorDataQoS(), std::bind(&SaveImg::imgCallBack, this, std::placeholders::_1));
 
       label_pub = this->create_publisher<std_msgs::msg::Int8>("/camera_label", 10);
 }
@@ -27,13 +27,13 @@ void SaveImg::imgCallBack(const sensor_msgs::msg::Image::SharedPtr msg)
     }
 
     cv::imwrite("/home/mechax/zyb/lidar_camera_calibration_data/calibration_img.jpg", cv_ptr->image);
-    RCLCPP_INFO(this->get_logger(), "success to save img!");
+    RCLCPP_INFO(this->get_logger(), "success to save rightimg!");
 
     if(i == 20)
     {
-        std_msgs::msg::Int8 label;
-        label.data = 0;
-        label_pub->publish(label);
+      std_msgs::msg::Int8 label;
+      label.data = 2;
+      label_pub->publish(label);
         throw std::runtime_error("Terminating at i == 20");
     }
 

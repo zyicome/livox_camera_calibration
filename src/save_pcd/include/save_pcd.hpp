@@ -8,6 +8,7 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
+#include <std_msgs/msg/int8.hpp>
 #include <pcl/conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -35,6 +36,7 @@ public:
 
     // publisher
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_pub;
+    rclcpp::Publisher<std_msgs::msg::Int8>::SharedPtr begin_calibration_pub;
     // subscriber
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_sub;
 };
