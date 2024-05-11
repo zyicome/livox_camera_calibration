@@ -490,7 +490,13 @@ int main(int argc, char **argv) {
   result.data.push_back(R(2, 1));
   result.data.push_back(R(2, 2));
   result.data.push_back(T[2]);
-  result.data.push_back(0.0); // 0表示近距离，1表示远距离
+  if(if_begin == 0 || if_begin == 1)
+  {
+    result.data.push_back(0.0); // 0表示近距离，1表示远距离
+  }
+  else if(if_begin == 2){
+  result.data.push_back(1.0); // 0表示近距离，1表示远距离
+  }
   calibra.calibration_result_pub_->publish(result);
   std::cout << "publish result" << std::endl;
 

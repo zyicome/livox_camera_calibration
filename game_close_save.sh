@@ -2,6 +2,8 @@ echo "Starting colcon build"
 colcon build
 echo "Colcon build finished"
 
+cd "/home/mechax/zyb/livox_camera_calibration"
+
 cmds=(  #"ros2 launch mindvision_camera mv_launch.py"
 	#"ros2 launch hik_camera hik_camera.launch.py"
 	#"ros2 launch livox_ros2_driver livox_lidar_launch.py"
