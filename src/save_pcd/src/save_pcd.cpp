@@ -61,11 +61,11 @@ void RadarDeal::pointCloudCallback(const sensor_msgs::msg::PointCloud2 &input)
         std::cout << "save" << std::endl;
         *all_cloud += *cloud;
     }
-    if(i == 150)
+    //if(i == 200)
     {
-        pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd", *all_cloud);
-        std::cout << "success to save pcd!" << std::endl;
-        for(int j = 0;j<20;j++)
+        //pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_pcd.pcd", *all_cloud);
+        //std::cout << "success to save pcd!" << std::endl;
+        for(int j = 0;j<8000;j++)
         {
             std_msgs::msg::Int8 msg;
             msg.data = 1;

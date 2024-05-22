@@ -268,25 +268,29 @@ int main(int argc, char **argv) {
   else if(if_begin == 2)
   {
     std::cout << "far camera calibration" << std::endl;
-    camera_matrix.push_back(3135.31292);
+    camera_matrix.push_back(3085.70228);
   camera_matrix.push_back(0.0);
-  camera_matrix.push_back(526.87116);
+  camera_matrix.push_back(628.43853);
   camera_matrix.push_back(0.0);
-  camera_matrix.push_back(3151.06425);
-  camera_matrix.push_back(695.83061);
+  camera_matrix.push_back(3121.25945);
+  camera_matrix.push_back(936.7318);
   camera_matrix.push_back(0.0);
   camera_matrix.push_back(0.0);
   camera_matrix.push_back(1.0);
-  dist_coeffs.push_back(-0.019203);
-  dist_coeffs.push_back(0.252109);
-  dist_coeffs.push_back(0.016576);
-  dist_coeffs.push_back(-0.012270);
+  dist_coeffs.push_back(0.019831);
+  dist_coeffs.push_back(-0.098189);
+  dist_coeffs.push_back(0.035928);
+  dist_coeffs.push_back(-0.007875);
   dist_coeffs.push_back(0.0);
   }
 
   std::cout << "camera_matrix: " << camera_matrix.size() << std::endl;
   std::cout << "dist_coeffs: " << dist_coeffs.size() << std::endl;
   std::cout << "use_rough_calib: " << use_rough_calib << std::endl;
+  for(int i =0;i<camera_matrix.size();i++)
+  {
+    std::cout << "camera_matrix[" << i << "]: " << camera_matrix[i] << std::endl;
+  }
 
   // Load this in a function?
   calibra.fx_ = camera_matrix[0];
@@ -492,10 +496,10 @@ int main(int argc, char **argv) {
   result.data.push_back(T[2]);
   if(if_begin == 0 || if_begin == 1)
   {
-    result.data.push_back(0.0); // 0表示近距离，1表示远距离
+    result.data.push_back(0); // 0表示近距离，1表示远距离
   }
   else if(if_begin == 2){
-  result.data.push_back(1.0); // 0表示近距离，1表示远距离
+  result.data.push_back(1); // 0表示近距离，1表示远距离
   }
   calibra.calibration_result_pub_->publish(result);
   std::cout << "publish result" << std::endl;

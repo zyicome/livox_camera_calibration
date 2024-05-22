@@ -1092,6 +1092,8 @@ void Calibration::buildVPnp(
                     pts_2d);
   pcl::PointCloud<pcl::PointXYZ>::Ptr line_edge_cloud_2d(
       new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZI>::Ptr line_edge_cloud_3d(
+      new pcl::PointCloud<pcl::PointXYZI>);
   std::vector<int> line_edge_cloud_2d_number;
   for (size_t i = 0; i < pts_2d.size(); i++) {
     pcl::PointXYZ p;
@@ -1111,8 +1113,15 @@ void Calibration::buildVPnp(
       } else {
         img_pts_container[pts_2d[i].y][pts_2d[i].x].push_back(pi_3d);
       }
+      line_edge_cloud_3d->points.push_back(pi_3d);
     }
   }
+  line_edge_cloud_3d->height = 1;
+  line_edge_cloud_3d->width = line_edge_cloud_3d->points.size();
+  pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_edge.pcd", *line_edge_cloud_3d);
+  line_edge_cloud_2d->height = 1;
+  line_edge_cloud_2d->width = line_edge_cloud_2d->points.size();
+  pcl::io::savePCDFileASCII("/home/mechax/zyb/lidar_camera_calibration_data/calibration_edge_2d.pcd", *line_edge_cloud_2d);
   if (show_residual) {
     cv::Mat residual_img =
         getConnectImg(dis_threshold, cam_edge_cloud_2d, line_edge_cloud_2d);
